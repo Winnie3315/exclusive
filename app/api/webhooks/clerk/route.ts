@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === 'user.created') {
-    const { id, email_addresses, first_name, last_name, image_url, username } = evt.data;
+    const { id, email_addresses, first_name, username } = evt.data; // Убраны last_name и image_url
 
     if (!email_addresses || email_addresses.length === 0) {
       console.error('No email address found in the webhook data.');
