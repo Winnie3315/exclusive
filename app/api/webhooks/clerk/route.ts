@@ -34,11 +34,11 @@ export async function POST(req: Request) {
   let evt;
   try {
     evt = wh.verify(body, {
-      "svix-id": svix_id || "test-id",
-      "svix-timestamp": svix_timestamp || "1234567890",
-      "svix-signature": svix_signature || "test-signature",
+      "svix-id": svix_id,
+      "svix-timestamp": svix_timestamp,
+      "svix-signature": svix_signature,
     }) as WebhookEvent;
-  } catch (err) {
+  } catch (error) {
     console.warn("Skipping signature verification for testing purposes");
     evt = JSON.parse(body) as WebhookEvent;
   }
