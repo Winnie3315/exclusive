@@ -38,10 +38,11 @@ export async function POST(req: Request) {
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     }) as WebhookEvent;
-  } catch (error) {
+  } catch {
     console.warn("Skipping signature verification for testing purposes");
-    evt = JSON.parse(body) as WebhookEvent;
+    evt = JSON.parse(body) as WebhookEvent; // Парсим тело при ошибке
   }
+  
 
   const { id } = evt.data;
   const eventType = evt.type;
