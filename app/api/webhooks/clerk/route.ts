@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
   const wh = new Webhook(WEBHOOK_SECRET);
 
-  let evt;
+  let evt: WebhookEvent; // Указываем тип переменной
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
@@ -42,7 +42,6 @@ export async function POST(req: Request) {
     console.warn("Skipping signature verification for testing purposes");
     evt = JSON.parse(body) as WebhookEvent; // Парсим тело при ошибке
   }
-  
 
   const { id } = evt.data;
   const eventType = evt.type;
