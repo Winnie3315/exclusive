@@ -2,7 +2,8 @@ import { mongoClientConnect } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 
-export const PATCH = async (req: NextRequest, { params }: { params: { id: string } }) => {
+// PATCH метод
+export const PATCH = async (req: NextRequest, context: { params: { id: string } }) => {
   try {
     const client = await mongoClientConnect();
     const db = client.db("mydatabase");
@@ -11,7 +12,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: { id: string
     const categoryItems = await db
       .collection("category")
       .findOneAndUpdate(
-        { _id: new ObjectId(params.id) },
+        { _id: new ObjectId(context.params.id) },
         { $set: body },
         { returnDocument: "after" }
       );
@@ -26,14 +27,15 @@ export const PATCH = async (req: NextRequest, { params }: { params: { id: string
   }
 };
 
-export const DELETE = async (req: NextRequest, { params }: { params: { id: string } }) => {
+// DELETE метод
+export const DELETE = async (req: NextRequest, context: { params: { id: string } }) => {
   try {
     const client = await mongoClientConnect();
     const db = client.db("mydatabase");
 
     const categoryItems = await db
       .collection("category")
-      .findOneAndDelete({ _id: new ObjectId(params.id) });
+      .findOneAndDelete({ _id: new ObjectId(context.params.id) });
 
     if (!categoryItems.value) {
       return NextResponse.json({ success: false, message: "Category not found" }, { status: 404 });
