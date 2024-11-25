@@ -1,5 +1,25 @@
+import { MongoClient } from "mongodb";
 import mongoose, { Mongoose } from "mongoose";
 
+// MongoClient Setup
+const uri = process.env.MONGODB_URL || "";
+const mongoOptions = {};
+
+if (!process.env.MONGODB_URL) {
+  throw new Error("Please add your Mongo URI to .env.local");
+}
+
+let mongoClient: MongoClient;
+let mongoClientPromise: Promise<MongoClient>;
+
+mongoClient = new MongoClient(uri, mongoOptions);
+mongoClientPromise = mongoClient.connect();
+
+export const mongoClientConnect = async (): Promise<MongoClient> => {
+  return mongoClientPromise;
+};
+
+// Mongoose Setup
 const MONGODB_URL = process.env.MONGODB_URL!;
 
 interface MongooseConn {
@@ -7,27 +27,27 @@ interface MongooseConn {
   promise: Promise<Mongoose> | null;
 }
 
-let cached: MongooseConn = (global as any).mongoose;
+let mongooseCached: MongooseConn = (global as any).mongoose;
 
-if (!cached) {
-  cached = (global as any).mongoose = {
+if (!mongooseCached) {
+  mongooseCached = (global as any).mongoose = {
     conn: null,
     promise: null,
   };
 }
 
-export const connect = async () => {
-  if (cached.conn) return cached.conn;
+export const mongooseConnect = async (): Promise<Mongoose> => {
+  if (mongooseCached.conn) return mongooseCached.conn;
 
-  cached.promise =
-    cached.promise ||
+  mongooseCached.promise =
+    mongooseCached.promise ||
     mongoose.connect(MONGODB_URL, {
       dbName: "clerkauthv5",
       bufferCommands: false,
       connectTimeoutMS: 30000,
     });
 
-  cached.conn = await cached.promise;
+  mongooseCached.conn = await mongooseCached.promise;
 
-  return cached.conn;
+  return mongooseCached.conn;
 };
