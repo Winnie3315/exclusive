@@ -64,9 +64,9 @@ export async function POST(req: Request) {
     console.log("User created:", user);
 
     // Подключаемся к MongoDB, если соединение не установлено
-    // if (mongoose.connection.readyState !== 1) {
-    //   await connect();
-    // }
+    if (mongoose.connection.readyState !== 1) {
+      await mongooseConnect();
+    }
 
     // Сохраняем пользователя в MongoDB
     try {
